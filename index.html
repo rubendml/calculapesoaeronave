@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Peso de Aeronaves</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        h2 {
+            font-size: 18px;
+            font-weight: normal;
+            opacity: 0.9;
+        }
+        
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+        
+        .result-group {
+            background-color: var(--light-color);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+            font-weight: bold;
+            min-height: 42px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .alert {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .success {
+            color: var(--success-color);
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .calculate-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .calculate-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .reset-btn {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+        
+        .reset-btn:hover {
+            background-color: #d5dbdb;
+        }
+        
+        .history-section {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: var(--light-color);
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        @media (max-width: 768px) {
+            .calculator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            table {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CALCULADORA DE PESO</h1>
+            <h2>JUAN DAVID MORALEZ GONZÁLEZ</h2>
+        </header>
+        
+        <div class="calculator-grid">
+            <div class="input-group">
+                <label for="bow">BOW (Basic Operating Weight) lb</label>
+                <input type="number" id="bow" placeholder="Ingrese BOW">
+            </div>
+            
+            <div class="input-group">
+                <label for="mzfw">MZFW (Max Zero Fuel Weight) lb</label>
+                <input type="number" id="mzfw" placeholder="Ingrese MZFW">
+            </div>
+            
+            <div class="input-group">
+                <label for="mtow">MTOW (Max TakeOff Weight) lb</label>
+                <input type="number" id="mtow" placeholder="Ingrese MTOW">
+            </div>
+            
+            <div class="input-group">
+                <label for="mlw">MLW (Max Landing Weight) lb</label>
+                <input type="number" id="mlw" placeholder="Ingrese MLW">
+            </div>
+            
+            <div class="input-group">
+                <label for="mrw">MRW (Max Ramp Weight) lb</label>
+                <input type="number" id="mrw" placeholder="Ingrese MRW">
+            </div>
+            
+            <div class="input-group">
+                <label for="tripFuel">Trip Fuel (combustible de viaje) lb</label>
+                <input type="number" id="tripFuel" placeholder="Ingrese Trip Fuel">
+            </div>
+            
+            <div class="input-group">
+                <label for="taxiFuel">Taxi Fuel (combustible de rodaje) lb</label>
+                <input type="number" id="taxiFuel" placeholder="Ingrese Taxi Fuel">
+            </div>
+            
+            <div class="input-group">
+                <label for="blockFuel">BLOCK FUEL TOTAL lb</label>
+                <input type="number" id="blockFuel" placeholder="Ingrese Block Fuel">
+            </div>
+        </div>
+        
+        <div class="calculator-grid">
+            <div class="input-group">
+                <label>ZFW (Zero Fuel Weight) lb</label>
+                <div id="zfw" class="result-group">-</div>
+            </div>
+            
+            <div class="input-group">
+                <label>TOW (TakeOff Weight) lb</label>
+                <div id="tow" class="result-group">-</div>
+            </div>
+            
+            <div class="input-group">
+                <label>RW (Ramp Weight) lb</label>
+                <div id="rw" class="result-group">-</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Alert RW > MRW</label>
+                <div id="alertRw" class="result-group">-</div>
+            </div>
+            
+            <div class="input-group">
+                <label>LW (Landing Weight) lb</label>
+                <div id="lw" class="result-group">-</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Alert LW > MLW</label>
+                <div id="alertLw" class="result-group">-</div>
+            </div>
+            
+            <div class="input-group">
+                <label>Máxima Carga Paga lb</label>
+                <div id="maxPayload" class="result-group">-</div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="calculate-btn" onclick="calculateWeights()">Calcular Pesos</button>
+            <button class="reset-btn" onclick="resetForm()">Limpiar</button>
+        </div>
+        
+        <div class="history-section">
+            <h3>Historial de Cálculos</h3>
+            <table id="historyTable">
+                <thead>
+                    <tr>
+                        <th>BOW</th>
+                        <th>MZFW</th>
+                        <th>MTOW</th>
+                        <th>MLW</th>
+                        <th>MRW</th>
+                        <th>Trip Fuel</th>
+                        <th>Taxi Fuel</th>
+                        <th>Block Fuel</th>
+                        <th>ZFW</th>
+                        <th>TOW</th>
+                        <th>RW</th>
+                        <th>LW</th>
+                        <th>Máx. Carga</th>
+                    </tr>
+                </thead>
+                <tbody id="historyBody">
+                    <!-- Las filas se agregarán dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Función para calcular todos los pesos
+        function calculateWeights() {
+            // Obtener valores de entrada
+            const bow = parseFloat(document.getElementById('bow').value) || 0;
+            const mzfw = parseFloat(document.getElementById('mzfw').value) || 0;
+            const mtow = parseFloat(document.getElementById('mtow').value) || 0;
+            const mlw = parseFloat(document.getElementById('mlw').value) || 0;
+            const mrw = parseFloat(document.getElementById('mrw').value) || 0;
+            const tripFuel = parseFloat(document.getElementById('tripFuel').value) || 0;
+            const taxiFuel = parseFloat(document.getElementById('taxiFuel').value) || 0;
+            const blockFuel = parseFloat(document.getElementById('blockFuel').value) || 0;
+            
+            // Calcular RW (Ramp Weight)
+            const rw = Math.min(mrw, bow + blockFuel);
+            
+            // Calcular ZFW (Zero Fuel Weight)
+            const zfw = rw - blockFuel;
+            
+            // Calcular TOW (TakeOff Weight)
+            let tow;
+            if (zfw > mlw) {
+                tow = Math.min(mtow, mlw + tripFuel);
+            } else {
+                tow = Math.min(mtow, zfw + tripFuel);
+            }
+            
+            // Calcular LW (Landing Weight)
+            const lw = Math.min(mlw, tow - tripFuel);
+            
+            // Calcular Máxima Carga Paga
+            const maxPayload = zfw - bow;
+            
+            // Verificar alertas
+            const alertRw = rw > mrw ? "ALERTA: RW > MRW" : "OK";
+            const alertLw = lw > mlw ? "ALERTA: LW > MLW" : "OK";
+            
+            // Mostrar resultados
+            document.getElementById('zfw').textContent = zfw.toLocaleString();
+            document.getElementById('tow').textContent = tow.toLocaleString();
+            document.getElementById('rw').textContent = rw.toLocaleString();
+            document.getElementById('lw').textContent = lw.toLocaleString();
+            document.getElementById('maxPayload').textContent = maxPayload.toLocaleString();
+            
+            // Mostrar alertas con colores
+            const alertRwElement = document.getElementById('alertRw');
+            const alertLwElement = document.getElementById('alertLw');
+            
+            alertRwElement.textContent = alertRw;
+            alertRwElement.className = alertRw.includes("ALERTA") ? "result-group alert" : "result-group success";
+            
+            alertLwElement.textContent = alertLw;
+            alertLwElement.className = alertLw.includes("ALERTA") ? "result-group alert" : "result-group success";
+            
+            // Guardar en historial
+            addToHistory(bow, mzfw, mtow, mlw, mrw, tripFuel, taxiFuel, blockFuel, zfw, tow, rw, lw, maxPayload);
+        }
+        
+        // Función para agregar cálculo al historial
+        function addToHistory(bow, mzfw, mtow, mlw, mrw, tripFuel, taxiFuel, blockFuel, zfw, tow, rw, lw, maxPayload) {
+            const historyBody = document.getElementById('historyBody');
+            const newRow = document.createElement('tr');
+            
+            newRow.innerHTML = `
+                <td>${bow.toLocaleString()}</td>
+                <td>${mzfw.toLocaleString()}</td>
+                <td>${mtow.toLocaleString()}</td>
+                <td>${mlw.toLocaleString()}</td>
+                <td>${mrw.toLocaleString()}</td>
+                <td>${tripFuel.toLocaleString()}</td>
+                <td>${taxiFuel.toLocaleString()}</td>
+                <td>${blockFuel.toLocaleString()}</td>
+                <td>${zfw.toLocaleString()}</td>
+                <td>${tow.toLocaleString()}</td>
+                <td>${rw.toLocaleString()}</td>
+                <td>${lw.toLocaleString()}</td>
+                <td>${maxPayload.toLocaleString()}</td>
+            `;
+            
+            historyBody.insertBefore(newRow, historyBody.firstChild);
+            
+            // Limitar historial a 10 entradas
+            if (historyBody.children.length > 10) {
+                historyBody.removeChild(historyBody.lastChild);
+            }
+            
+            // Guardar en localStorage
+            saveHistoryToLocalStorage();
+        }
+        
+        // Función para guardar historial en localStorage
+        function saveHistoryToLocalStorage() {
+            const historyBody = document.getElementById('historyBody');
+            const history = [];
+            
+            for (let i = 0; i < historyBody.children.length; i++) {
+                const row = historyBody.children[i];
+                const cells = row.getElementsByTagName('td');
+                
+                history.push({
+                    bow: cells[0].textContent,
+                    mzfw: cells[1].textContent,
+                    mtow: cells[2].textContent,
+                    mlw: cells[3].textContent,
+                    mrw: cells[4].textContent,
+                    tripFuel: cells[5].textContent,
+                    taxiFuel: cells[6].textContent,
+                    blockFuel: cells[7].textContent,
+                    zfw: cells[8].textContent,
+                    tow: cells[9].textContent,
+                    rw: cells[10].textContent,
+                    lw: cells[11].textContent,
+                    maxPayload: cells[12].textContent
+                });
+            }
+            
+            localStorage.setItem('weightCalculatorHistory', JSON.stringify(history));
+        }
+        
+        // Función para cargar historial desde localStorage
+        function loadHistoryFromLocalStorage() {
+            const history = JSON.parse(localStorage.getItem('weightCalculatorHistory')) || [];
+            const historyBody = document.getElementById('historyBody');
+            
+            historyBody.innerHTML = '';
+            
+            history.forEach(item => {
+                const newRow = document.createElement('tr');
+                
+                newRow.innerHTML = `
+                    <td>${item.bow}</td>
+                    <td>${item.mzfw}</td>
+                    <td>${item.mtow}</td>
+                    <td>${item.mlw}</td>
+                    <td>${item.mrw}</td>
+                    <td>${item.tripFuel}</td>
+                    <td>${item.taxiFuel}</td>
+                    <td>${item.blockFuel}</td>
+                    <td>${item.zfw}</td>
+                    <td>${item.tow}</td>
+                    <td>${item.rw}</td>
+                    <td>${item.lw}</td>
+                    <td>${item.maxPayload}</td>
+                `;
+                
+                historyBody.appendChild(newRow);
+            });
+        }
+        
+        // Función para limpiar el formulario
+        function resetForm() {
+            document.getElementById('bow').value = '';
+            document.getElementById('mzfw').value = '';
+            document.getElementById('mtow').value = '';
+            document.getElementById('mlw').value = '';
+            document.getElementById('mrw').value = '';
+            document.getElementById('tripFuel').value = '';
+            document.getElementById('taxiFuel').value = '';
+            document.getElementById('blockFuel').value = '';
+            
+            document.getElementById('zfw').textContent = '-';
+            document.getElementById('tow').textContent = '-';
+            document.getElementById('rw').textContent = '-';
+            document.getElementById('lw').textContent = '-';
+            document.getElementById('maxPayload').textContent = '-';
+            
+            document.getElementById('alertRw').textContent = '-';
+            document.getElementById('alertRw').className = 'result-group';
+            
+            document.getElementById('alertLw').textContent = '-';
+            document.getElementById('alertLw').className = 'result-group';
+        }
+        
+        // Cargar historial al iniciar la página
+        window.onload = function() {
+            loadHistoryFromLocalStorage();
+            
+            // Precargar algunos valores de ejemplo
+            document.getElementById('bow').value = 75000;
+            document.getElementById('mzfw').value = 128000;
+            document.getElementById('mtow').value = 205000;
+            document.getElementById('mlw').value = 145000;
+            document.getElementById('mrw').value = 205000;
+            document.getElementById('tripFuel').value = 68000;
+            document.getElementById('taxiFuel').value = 1000;
+            document.getElementById('blockFuel').value = 78000;
+        };
+    </script>
+</body>
+</html>
