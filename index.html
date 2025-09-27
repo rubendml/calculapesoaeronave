@@ -303,7 +303,7 @@
     </div>
 
     <script>
-        // Función para calcular todos los pesos
+        // Función para calcular todos los pesos según las fórmulas de la imagen
         function calculateWeights() {
             // Obtener valores de entrada
             const bow = parseFloat(document.getElementById('bow').value) || 0;
@@ -315,29 +315,47 @@
             const taxiFuel = parseFloat(document.getElementById('taxiFuel').value) || 0;
             const blockFuel = parseFloat(document.getElementById('blockFuel').value) || 0;
             
-            // Calcular RW (Ramp Weight)
-            const rw = Math.min(mrw, bow + blockFuel);
+            // Calcular RW (Ramp Weight) - Fórmula: =IF(K4>E4,E4,K4)
+            // Donde K4 = TOW + Taxi Fuel
+            // Primero necesitamos calcular TOW para poder calcular RW
             
-            // Calcular ZFW (Zero Fuel Weight)
-            const zfw = rw - blockFuel;
+            // Calcular ZFW (Zero Fuel Weight) - Fórmula: =+L4-H4
+            // Donde L4 = RW y H4 = Block Fuel
+            // Pero necesitamos RW primero
             
-            // Calcular TOW (TakeOff Weight)
+            // Calcular TOW (TakeOff Weight) - Fórmula: =+IF(M4>D4,D4+F4,C4-G4)
+            // Donde M4 = LW (Landing Weight), D4 = MLW, F4 = Trip Fuel, C4 = MTOW, G4 = Taxi Fuel
+            // Pero necesitamos LW primero
+            
+            // Calcular LW (Landing Weight) - Fórmula: =IF(M4>D4,D4,M4)
+            // Donde M4 = LW (provisional) = C4-F4 (MTOW - Trip Fuel)
+            const provisionalLw = mtow - tripFuel;
+            const lw = Math.min(mlw, provisionalLw);
+            
+            // Ahora podemos calcular TOW
             let tow;
-            if (zfw > mlw) {
-                tow = Math.min(mtow, mlw + tripFuel);
+            if (lw > mlw) {
+                tow = mlw + tripFuel;
             } else {
-                tow = Math.min(mtow, zfw + tripFuel);
+                tow = mtow - taxiFuel;
             }
             
-            // Calcular LW (Landing Weight)
-            const lw = Math.min(mlw, tow - tripFuel);
+            // Calcular RW (Ramp Weight) - Fórmula: =IF(K4>E4,E4,K4)
+            // Donde K4 = TOW + Taxi Fuel, E4 = MRW
+            const provisionalRw = tow + taxiFuel;
+            const rw = Math.min(mrw, provisionalRw);
             
-            // Calcular Máxima Carga Paga
+            // Calcular ZFW (Zero Fuel Weight) - Fórmula: =+L4-H4
+            // Donde L4 = RW, H4 = Block Fuel
+            const zfw = rw - blockFuel;
+            
+            // Calcular Máxima Carga Paga - Fórmula: =+I4-A4
+            // Donde I4 = ZFW, A4 = BOW
             const maxPayload = zfw - bow;
             
             // Verificar alertas
-            const alertRw = rw > mrw ? "ALERTA: RW > MRW" : "OK";
-            const alertLw = lw > mlw ? "ALERTA: LW > MLW" : "OK";
+            const alertRw = provisionalRw > mrw ? "ALERTA: RW > MRW" : "OK";
+            const alertLw = provisionalLw > mlw ? "ALERTA: LW > MLW" : "OK";
             
             // Mostrar resultados
             document.getElementById('zfw').textContent = zfw.toLocaleString();
