@@ -6,13 +6,17 @@
     <title>Calculadora de Peso de Aeronaves</title>
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --accent-color: #e74c3c;
-            --light-color: #ecf0f1;
-            --dark-color: #34495e;
-            --success-color: #2ecc71;
-            --warning-color: #f39c12;
+            --primary-color: #1a237e;
+            --secondary-color: #3949ab;
+            --accent-color: #f44336;
+            --light-color: #e8eaf6;
+            --dark-color: #283593;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --background: #f5f7ff;
+            --card-bg: #ffffff;
+            --text-primary: #1a237e;
+            --text-secondary: #5c6bc0;
         }
         
         * {
@@ -23,44 +27,60 @@
         }
         
         body {
-            background-color: #f5f7fa;
-            color: var(--dark-color);
+            background: linear-gradient(135deg, #e8eaf6 0%, #f5f7ff 100%);
+            color: var(--text-primary);
             line-height: 1.6;
             padding: 20px;
+            min-height: 100vh;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(26, 35, 126, 0.1);
             overflow: hidden;
         }
         
         header {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
             color: white;
-            padding: 20px;
+            padding: 25px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
         }
         
         h1 {
-            font-size: 24px;
-            margin-bottom: 5px;
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 700;
+            position: relative;
         }
         
         h2 {
             font-size: 18px;
             font-weight: normal;
             opacity: 0.9;
+            position: relative;
         }
         
         .calculator-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            padding: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 25px;
         }
         
         .input-group {
@@ -69,104 +89,147 @@
         }
         
         label {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 8px;
             font-size: 14px;
+            color: var(--text-primary);
         }
         
         input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            background-color: #fafafa;
         }
         
         input:focus {
             outline: none;
             border-color: var(--secondary-color);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(57, 73, 171, 0.2);
         }
         
         .result-group {
-            background-color: var(--light-color);
-            padding: 10px;
-            border-radius: 5px;
+            background: linear-gradient(135deg, var(--light-color) 0%, #f0f2ff 100%);
+            padding: 12px 15px;
+            border-radius: 8px;
             margin-top: 5px;
-            font-weight: bold;
-            min-height: 42px;
+            font-weight: 600;
+            min-height: 48px;
             display: flex;
             align-items: center;
+            border-left: 4px solid var(--secondary-color);
         }
         
         .alert {
             color: var(--accent-color);
             font-weight: bold;
+            border-left-color: var(--accent-color);
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
         }
         
         .success {
             color: var(--success-color);
+            border-left-color: var(--success-color);
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+        
+        .warning {
+            color: var(--warning-color);
+            border-left-color: var(--warning-color);
+            background: linear-gradient(135deg, #fff3e0 0%, #ffcc80 100%);
         }
         
         .buttons {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            border-top: 1px solid #eee;
+            gap: 20px;
+            padding: 25px;
+            border-top: 1px solid #e0e0e0;
+            background-color: #fafafa;
         }
         
         button {
-            padding: 12px 25px;
+            padding: 14px 30px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 600;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         
         .calculate-btn {
-            background-color: var(--secondary-color);
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(57, 73, 171, 0.3);
         }
         
         .calculate-btn:hover {
-            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(57, 73, 171, 0.4);
         }
         
         .reset-btn {
-            background-color: var(--light-color);
-            color: var(--dark-color);
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            color: var(--text-primary);
+            border: 1px solid #e0e0e0;
         }
         
         .reset-btn:hover {
-            background-color: #d5dbdb;
+            background: linear-gradient(135deg, #eeeeee 0%, #d6d6d6 100%);
+            transform: translateY(-2px);
         }
         
         .history-section {
-            padding: 20px;
-            border-top: 1px solid #eee;
+            padding: 25px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .history-section h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
         }
         
         th, td {
-            padding: 12px 15px;
+            padding: 14px 16px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #e0e0e0;
         }
         
         th {
-            background-color: var(--light-color);
-            font-weight: bold;
+            background: linear-gradient(135deg, var(--light-color) 0%, #e0e7ff 100%);
+            font-weight: 600;
+            color: var(--text-primary);
         }
         
         tr:hover {
-            background-color: #f9f9f9;
+            background-color: #f5f5f5;
+        }
+        
+        @media (max-width: 1024px) {
+            .calculator-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
         
         @media (max-width: 768px) {
@@ -180,16 +243,43 @@
             
             table {
                 font-size: 14px;
+                display: block;
+                overflow-x: auto;
             }
+        }
+        
+        .formula-info {
+            padding: 15px 25px;
+            background-color: #e3f2fd;
+            border-bottom: 1px solid #bbdefb;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+        
+        .formula-info p {
+            margin: 5px 0;
+        }
+        
+        .formula-highlight {
+            background-color: #ffecb3;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>CALCULADORA DE PESO</h1>
+            <h1>CALCULADORA DE PESO DE AERONAVES</h1>
             <h2>JUAN DAVID MORALEZ GONZÁLEZ</h2>
         </header>
+        
+        <div class="formula-info">
+            <p><strong>Fórmulas basadas en la imagen proporcionada:</strong></p>
+            <p>ZFW = RW - Block Fuel | TOW = IF(LW > MLW, MLW + Trip Fuel, MTOW - Taxi Fuel)</p>
+            <p>RW = IF(TOW + Taxi Fuel > MRW, MRW, TOW + Taxi Fuel) | LW = IF(MTOW - Trip Fuel > MLW, MLW, MTOW - Trip Fuel)</p>
+        </div>
         
         <div class="calculator-grid">
             <div class="input-group">
@@ -245,6 +335,11 @@
             </div>
             
             <div class="input-group">
+                <label>Alert TOW > MTOW</label>
+                <div id="alertTow" class="result-group">-</div>
+            </div>
+            
+            <div class="input-group">
                 <label>RW (Ramp Weight) lb</label>
                 <div id="rw" class="result-group">-</div>
             </div>
@@ -271,12 +366,31 @@
         </div>
         
         <div class="buttons">
-            <button class="calculate-btn" onclick="calculateWeights()">Calcular Pesos</button>
-            <button class="reset-btn" onclick="resetForm()">Limpiar</button>
+            <button class="calculate-btn" onclick="calculateWeights()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM2 2a1 1 0 0 0-1 1v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1H2z"/>
+                    <path d="M8 4a.5.5 0 0 1 .5.5V6H10a.5.5 0 0 1 0 1H8.5v1.5a.5.5 0 0 1-1 0V7H6a.5.5 0 0 1 0-1h1.5V4.5A.5.5 0 0 1 8 4z"/>
+                </svg>
+                Calcular Pesos
+            </button>
+            <button class="reset-btn" onclick="resetForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                </svg>
+                Limpiar
+            </button>
         </div>
         
         <div class="history-section">
-            <h3>Historial de Cálculos</h3>
+            <h3>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8.515 1.019A7 7 0 0 0 8 1V0a8 8 0 0 1 .589.022l-.074.997zm2.004.45a7.003 7.003 0 0 0-.985-.299l.219-.976c.383.086.76.2 1.126.342l-.36.933zm1.37.71a7.01 7.01 0 0 0-.439-.27l.493-.87a8.025 8.025 0 0 1 .979.654l-.615.789a6.996 6.996 0 0 0-.418-.302zm1.834 1.79a6.99 6.99 0 0 0-.653-.796l.724-.69c.27.285.52.59.747.91l-.818.576zm.744 1.352a7.08 7.08 0 0 0-.214-.468l.893-.45a7.976 7.976 0 0 1 .45 1.088l-.95.313a7.023 7.023 0 0 0-.179-.483zm.53 2.507a6.991 6.991 0 0 0-.1-1.025l.985-.17c.067.386.106.778.116 1.17l-1 .025zm-.131 1.538c.033-.17.06-.339.081-.51l.993.123a7.957 7.957 0 0 1-.23 1.155l-.964-.267c.046-.165.086-.332.12-.501zm-.952 2.379c.184-.29.346-.594.486-.908l.914.405c-.16.36-.345.706-.555 1.038l-.845-.535zm-.964 1.205c.122-.122.239-.248.35-.378l.758.653a8.073 8.073 0 0 1-.401.432l-.707-.707z"/>
+                    <path d="M8 1a7 7 0 1 0 4.95 11.95l.707.707A8.001 8.001 0 1 1 8 0v1z"/>
+                    <path d="M7.5 3a.5.5 0 0 1 .5.5v5.21l3.248 1.856a.5.5 0 0 1-.496.868l-3.5-2A.5.5 0 0 1 7 9V3.5a.5.5 0 0 1 .5-.5z"/>
+                </svg>
+                Historial de Cálculos
+            </h3>
             <table id="historyTable">
                 <thead>
                     <tr>
@@ -315,45 +429,37 @@
             const taxiFuel = parseFloat(document.getElementById('taxiFuel').value) || 0;
             const blockFuel = parseFloat(document.getElementById('blockFuel').value) || 0;
             
-            // Calcular RW (Ramp Weight) - Fórmula: =IF(K4>E4,E4,K4)
-            // Donde K4 = TOW + Taxi Fuel
-            // Primero necesitamos calcular TOW para poder calcular RW
-            
-            // Calcular ZFW (Zero Fuel Weight) - Fórmula: =+L4-H4
-            // Donde L4 = RW y H4 = Block Fuel
-            // Pero necesitamos RW primero
-            
-            // Calcular TOW (TakeOff Weight) - Fórmula: =+IF(M4>D4,D4+F4,C4-G4)
-            // Donde M4 = LW (Landing Weight), D4 = MLW, F4 = Trip Fuel, C4 = MTOW, G4 = Taxi Fuel
-            // Pero necesitamos LW primero
-            
-            // Calcular LW (Landing Weight) - Fórmula: =IF(M4>D4,D4,M4)
-            // Donde M4 = LW (provisional) = C4-F4 (MTOW - Trip Fuel)
+            // 1. Calcular LW (Landing Weight) - Fórmula: =IF(M4>D4,D4,M4)
+            // Donde M4 = MTOW - Trip Fuel, D4 = MLW
             const provisionalLw = mtow - tripFuel;
             const lw = Math.min(mlw, provisionalLw);
             
-            // Ahora podemos calcular TOW
+            // 2. Calcular TOW (TakeOff Weight) - Fórmula: =+IF(M4>D4,D4+F4,C4-G4)
+            // Donde M4 = provisionalLw, D4 = MLW, F4 = Trip Fuel, C4 = MTOW, G4 = Taxi Fuel
             let tow;
-            if (lw > mlw) {
+            if (provisionalLw > mlw) {
+                // Si LW provisional > MLW, entonces TOW = MLW + Trip Fuel
                 tow = mlw + tripFuel;
             } else {
+                // Si no, TOW = MTOW - Taxi Fuel
                 tow = mtow - taxiFuel;
             }
             
-            // Calcular RW (Ramp Weight) - Fórmula: =IF(K4>E4,E4,K4)
+            // 3. Calcular RW (Ramp Weight) - Fórmula: =IF(K4>E4,E4,K4)
             // Donde K4 = TOW + Taxi Fuel, E4 = MRW
             const provisionalRw = tow + taxiFuel;
             const rw = Math.min(mrw, provisionalRw);
             
-            // Calcular ZFW (Zero Fuel Weight) - Fórmula: =+L4-H4
+            // 4. Calcular ZFW (Zero Fuel Weight) - Fórmula: =+L4-H4
             // Donde L4 = RW, H4 = Block Fuel
             const zfw = rw - blockFuel;
             
-            // Calcular Máxima Carga Paga - Fórmula: =+I4-A4
+            // 5. Calcular Máxima Carga Paga - Fórmula: =+I4-A4
             // Donde I4 = ZFW, A4 = BOW
             const maxPayload = zfw - bow;
             
             // Verificar alertas
+            const alertTow = tow > mtow ? "ALERTA: TOW > MTOW" : "OK";
             const alertRw = provisionalRw > mrw ? "ALERTA: RW > MRW" : "OK";
             const alertLw = provisionalLw > mlw ? "ALERTA: LW > MLW" : "OK";
             
@@ -365,8 +471,12 @@
             document.getElementById('maxPayload').textContent = maxPayload.toLocaleString();
             
             // Mostrar alertas con colores
+            const alertTowElement = document.getElementById('alertTow');
             const alertRwElement = document.getElementById('alertRw');
             const alertLwElement = document.getElementById('alertLw');
+            
+            alertTowElement.textContent = alertTow;
+            alertTowElement.className = alertTow.includes("ALERTA") ? "result-group alert" : "result-group success";
             
             alertRwElement.textContent = alertRw;
             alertRwElement.className = alertRw.includes("ALERTA") ? "result-group alert" : "result-group success";
@@ -485,6 +595,9 @@
             document.getElementById('rw').textContent = '-';
             document.getElementById('lw').textContent = '-';
             document.getElementById('maxPayload').textContent = '-';
+            
+            document.getElementById('alertTow').textContent = '-';
+            document.getElementById('alertTow').className = 'result-group';
             
             document.getElementById('alertRw').textContent = '-';
             document.getElementById('alertRw').className = 'result-group';
