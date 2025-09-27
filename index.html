@@ -35,7 +35,7 @@
         }
         
         .container {
-            max-width: 1300px;
+            max-width: 1400px;
             margin: 0 auto;
             background-color: var(--card-bg);
             border-radius: 16px;
@@ -76,6 +76,42 @@
             position: relative;
         }
         
+        .aircraft-selector {
+            padding: 20px;
+            background-color: #e3f2fd;
+            border-bottom: 1px solid #bbdefb;
+        }
+        
+        .selector-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .selector-container label {
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+        
+        select {
+            padding: 10px 15px;
+            border: 2px solid #bbdefb;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: white;
+            flex-grow: 1;
+            cursor: pointer;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(57, 73, 171, 0.2);
+        }
+        
         .calculator-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -88,11 +124,31 @@
             flex-direction: column;
         }
         
-        label {
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        
+        .input-header label {
             font-weight: 600;
-            margin-bottom: 8px;
             font-size: 14px;
             color: var(--text-primary);
+        }
+        
+        .reset-field {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            cursor: pointer;
+            font-size: 12px;
+            text-decoration: underline;
+            opacity: 0.7;
+        }
+        
+        .reset-field:hover {
+            opacity: 1;
         }
         
         input {
@@ -246,6 +302,11 @@
                 display: block;
                 overflow-x: auto;
             }
+            
+            .selector-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
         
         .formula-info {
@@ -266,6 +327,11 @@
             border-radius: 4px;
             font-weight: 600;
         }
+        
+        .modified {
+            border-color: var(--warning-color);
+            background-color: #fff8e1;
+        }
     </style>
 </head>
 <body>
@@ -275,50 +341,92 @@
             <h2>JUAN DAVID MORALEZ GONZÁLEZ</h2>
         </header>
         
-       <!--   <div class="formula-info"> -->
-            <!--  <p><strong>Fórmulas basadas en la imagen proporcionada:</strong></p> -->
-         <!--     <p>ZFW = RW - Block Fuel | TOW = IF(LW > MLW, MLW + Trip Fuel, MTOW - Taxi Fuel)</p> -->
-     <!--         <p>RW = IF(TOW + Taxi Fuel > MRW, MRW, TOW + Taxi Fuel) | LW = IF(MTOW - Trip Fuel > MLW, MLW, MTOW - Trip Fuel)</p> -->
-    <!--      </div> -->
+        <div class="aircraft-selector">
+            <div class="selector-container">
+                <label for="aircraftModel">Seleccione un modelo de aeronave:</label>
+                <select id="aircraftModel" onchange="loadAircraftData()">
+                    <option value="">-- Seleccione una aeronave --</option>
+                    <option value="boeing737">Boeing 737-800</option>
+                    <option value="airbus320">Airbus A320</option>
+                    <option value="boeing777">Boeing 777-300ER</option>
+                    <option value="airbus330">Airbus A330-300</option>
+                    <option value="embraer190">Embraer E190</option>
+                    <option value="bombardierCRJ">Bombardier CRJ-900</option>
+                    <option value="boeing787">Boeing 787-9 Dreamliner</option>
+                    <option value="airbus350">Airbus A350-900</option>
+                    <option value="custom">Personalizado (ingresar valores manualmente)</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="formula-info">
+            <p><strong>Fórmulas basadas en normas internacionales (FAA/EASA):</strong></p>
+            <p>ZFW = RW - Block Fuel | TOW = IF(LW > MLW, MLW + Trip Fuel, MTOW - Taxi Fuel)</p>
+            <p>RW = IF(TOW + Taxi Fuel > MRW, MRW, TOW + Taxi Fuel) | LW = IF(MTOW - Trip Fuel > MLW, MLW, MTOW - Trip Fuel)</p>
+        </div>
         
         <div class="calculator-grid">
             <div class="input-group">
-                <label for="bow">BOW (Basic Operating Weight) lb</label>
+                <div class="input-header">
+                    <label for="bow">BOW (Basic Operating Weight) lb</label>
+                    <button class="reset-field" onclick="resetField('bow')">Restablecer</button>
+                </div>
                 <input type="number" id="bow" placeholder="Ingrese BOW">
             </div>
             
             <div class="input-group">
-                <label for="mzfw">MZFW (Max Zero Fuel Weight) lb</label>
+                <div class="input-header">
+                    <label for="mzfw">MZFW (Max Zero Fuel Weight) lb</label>
+                    <button class="reset-field" onclick="resetField('mzfw')">Restablecer</button>
+                </div>
                 <input type="number" id="mzfw" placeholder="Ingrese MZFW">
             </div>
             
             <div class="input-group">
-                <label for="mtow">MTOW (Max TakeOff Weight) lb</label>
+                <div class="input-header">
+                    <label for="mtow">MTOW (Max TakeOff Weight) lb</label>
+                    <button class="reset-field" onclick="resetField('mtow')">Restablecer</button>
+                </div>
                 <input type="number" id="mtow" placeholder="Ingrese MTOW">
             </div>
             
             <div class="input-group">
-                <label for="mlw">MLW (Max Landing Weight) lb</label>
+                <div class="input-header">
+                    <label for="mlw">MLW (Max Landing Weight) lb</label>
+                    <button class="reset-field" onclick="resetField('mlw')">Restablecer</button>
+                </div>
                 <input type="number" id="mlw" placeholder="Ingrese MLW">
             </div>
             
             <div class="input-group">
-                <label for="mrw">MRW (Max Ramp Weight) lb</label>
+                <div class="input-header">
+                    <label for="mrw">MRW (Max Ramp Weight) lb</label>
+                    <button class="reset-field" onclick="resetField('mrw')">Restablecer</button>
+                </div>
                 <input type="number" id="mrw" placeholder="Ingrese MRW">
             </div>
             
             <div class="input-group">
-                <label for="tripFuel">Trip Fuel (combustible de viaje) lb</label>
+                <div class="input-header">
+                    <label for="tripFuel">Trip Fuel (combustible de viaje) lb</label>
+                    <button class="reset-field" onclick="resetField('tripFuel')">Restablecer</button>
+                </div>
                 <input type="number" id="tripFuel" placeholder="Ingrese Trip Fuel">
             </div>
             
             <div class="input-group">
-                <label for="taxiFuel">Taxi Fuel (combustible de rodaje) lb</label>
+                <div class="input-header">
+                    <label for="taxiFuel">Taxi Fuel (combustible de rodaje) lb</label>
+                    <button class="reset-field" onclick="resetField('taxiFuel')">Restablecer</button>
+                </div>
                 <input type="number" id="taxiFuel" placeholder="Ingrese Taxi Fuel">
             </div>
             
             <div class="input-group">
-                <label for="blockFuel">BLOCK FUEL TOTAL lb</label>
+                <div class="input-header">
+                    <label for="blockFuel">BLOCK FUEL TOTAL lb</label>
+                    <button class="reset-field" onclick="resetField('blockFuel')">Restablecer</button>
+                </div>
                 <input type="number" id="blockFuel" placeholder="Ingrese Block Fuel">
             </div>
         </div>
@@ -378,7 +486,7 @@
                     <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
                     <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
                 </svg>
-                Limpiar
+                Limpiar Todo
             </button>
         </div>
         
@@ -394,6 +502,7 @@
             <table id="historyTable">
                 <thead>
                     <tr>
+                        <th>Modelo</th>
                         <th>BOW</th>
                         <th>MZFW</th>
                         <th>MTOW</th>
@@ -417,6 +526,167 @@
     </div>
 
     <script>
+        // Base de datos de aeronaves con valores estándar según normas internacionales (FAA/EASA)
+        const aircraftDatabase = {
+            "boeing737": {
+                name: "Boeing 737-800",
+                bow: 91000,
+                mzfw: 128000,
+                mtow: 174200,
+                mlw: 146300,
+                mrw: 174200,
+                tripFuel: 35000,
+                taxiFuel: 1000,
+                blockFuel: 36000
+            },
+            "airbus320": {
+                name: "Airbus A320",
+                bow: 93000,
+                mzfw: 132000,
+                mtow: 172000,
+                mlw: 142000,
+                mrw: 172000,
+                tripFuel: 32000,
+                taxiFuel: 800,
+                blockFuel: 32800
+            },
+            "boeing777": {
+                name: "Boeing 777-300ER",
+                bow: 370000,
+                mzfw: 470000,
+                mtow: 775000,
+                mlw: 554000,
+                mrw: 775000,
+                tripFuel: 220000,
+                taxiFuel: 2000,
+                blockFuel: 222000
+            },
+            "airbus330": {
+                name: "Airbus A330-300",
+                bow: 265000,
+                mzfw: 380000,
+                mtow: 533000,
+                mlw: 391000,
+                mrw: 533000,
+                tripFuel: 150000,
+                taxiFuel: 1500,
+                blockFuel: 151500
+            },
+            "embraer190": {
+                name: "Embraer E190",
+                bow: 63000,
+                mzfw: 95000,
+                mtow: 114000,
+                mlw: 101000,
+                mrw: 114000,
+                tripFuel: 22000,
+                taxiFuel: 500,
+                blockFuel: 22500
+            },
+            "bombardierCRJ": {
+                name: "Bombardier CRJ-900",
+                bow: 52000,
+                mzfw: 78000,
+                mtow: 84500,
+                mlw: 79000,
+                mrw: 84500,
+                tripFuel: 18000,
+                taxiFuel: 400,
+                blockFuel: 18400
+            },
+            "boeing787": {
+                name: "Boeing 787-9 Dreamliner",
+                bow: 280000,
+                mzfw: 425000,
+                mtow: 560000,
+                mlw: 440000,
+                mrw: 560000,
+                tripFuel: 180000,
+                taxiFuel: 1800,
+                blockFuel: 181800
+            },
+            "airbus350": {
+                name: "Airbus A350-900",
+                bow: 290000,
+                mzfw: 460000,
+                mtow: 640000,
+                mlw: 500000,
+                mrw: 640000,
+                tripFuel: 200000,
+                taxiFuel: 2000,
+                blockFuel: 202000
+            },
+            "custom": {
+                name: "Personalizado",
+                bow: 0,
+                mzfw: 0,
+                mtow: 0,
+                mlw: 0,
+                mrw: 0,
+                tripFuel: 0,
+                taxiFuel: 0,
+                blockFuel: 0
+            }
+        };
+        
+        // Almacenar valores originales para restablecer campos
+        let originalValues = {};
+        
+        // Función para cargar datos de la aeronave seleccionada
+        function loadAircraftData() {
+            const selectedAircraft = document.getElementById('aircraftModel').value;
+            
+            if (selectedAircraft && selectedAircraft !== "custom") {
+                const aircraft = aircraftDatabase[selectedAircraft];
+                
+                // Guardar valores originales
+                originalValues = {...aircraft};
+                
+                // Llenar los campos con los valores de la aeronave
+                document.getElementById('bow').value = aircraft.bow;
+                document.getElementById('mzfw').value = aircraft.mzfw;
+                document.getElementById('mtow').value = aircraft.mtow;
+                document.getElementById('mlw').value = aircraft.mlw;
+                document.getElementById('mrw').value = aircraft.mrw;
+                document.getElementById('tripFuel').value = aircraft.tripFuel;
+                document.getElementById('taxiFuel').value = aircraft.taxiFuel;
+                document.getElementById('blockFuel').value = aircraft.blockFuel;
+                
+                // Quitar clase de modificación
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {
+                    input.classList.remove('modified');
+                });
+            } else if (selectedAircraft === "custom") {
+                // Limpiar campos para entrada personalizada
+                document.getElementById('bow').value = '';
+                document.getElementById('mzfw').value = '';
+                document.getElementById('mtow').value = '';
+                document.getElementById('mlw').value = '';
+                document.getElementById('mrw').value = '';
+                document.getElementById('tripFuel').value = '';
+                document.getElementById('taxiFuel').value = '';
+                document.getElementById('blockFuel').value = '';
+                
+                originalValues = {};
+            }
+        }
+        
+        // Función para restablecer un campo a su valor original
+        function resetField(fieldId) {
+            if (originalValues[fieldId] !== undefined) {
+                document.getElementById(fieldId).value = originalValues[fieldId];
+                document.getElementById(fieldId).classList.remove('modified');
+            }
+        }
+        
+        // Detectar cambios en los campos de entrada
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', function() {
+                this.classList.add('modified');
+            });
+        });
+        
         // Función para calcular todos los pesos según las fórmulas de la imagen
         function calculateWeights() {
             // Obtener valores de entrada
@@ -428,6 +698,10 @@
             const tripFuel = parseFloat(document.getElementById('tripFuel').value) || 0;
             const taxiFuel = parseFloat(document.getElementById('taxiFuel').value) || 0;
             const blockFuel = parseFloat(document.getElementById('blockFuel').value) || 0;
+            
+            // Obtener nombre del modelo seleccionado
+            const selectedAircraft = document.getElementById('aircraftModel').value;
+            const aircraftName = selectedAircraft ? aircraftDatabase[selectedAircraft]?.name || "Personalizado" : "Personalizado";
             
             // 1. Calcular LW (Landing Weight) - Fórmula: =IF(M4>D4,D4,M4)
             // Donde M4 = MTOW - Trip Fuel, D4 = MLW
@@ -485,15 +759,16 @@
             alertLwElement.className = alertLw.includes("ALERTA") ? "result-group alert" : "result-group success";
             
             // Guardar en historial
-            addToHistory(bow, mzfw, mtow, mlw, mrw, tripFuel, taxiFuel, blockFuel, zfw, tow, rw, lw, maxPayload);
+            addToHistory(aircraftName, bow, mzfw, mtow, mlw, mrw, tripFuel, taxiFuel, blockFuel, zfw, tow, rw, lw, maxPayload);
         }
         
         // Función para agregar cálculo al historial
-        function addToHistory(bow, mzfw, mtow, mlw, mrw, tripFuel, taxiFuel, blockFuel, zfw, tow, rw, lw, maxPayload) {
+        function addToHistory(aircraftName, bow, mzfw, mtow, mlw, mrw, tripFuel, taxiFuel, blockFuel, zfw, tow, rw, lw, maxPayload) {
             const historyBody = document.getElementById('historyBody');
             const newRow = document.createElement('tr');
             
             newRow.innerHTML = `
+                <td>${aircraftName}</td>
                 <td>${bow.toLocaleString()}</td>
                 <td>${mzfw.toLocaleString()}</td>
                 <td>${mtow.toLocaleString()}</td>
@@ -530,19 +805,20 @@
                 const cells = row.getElementsByTagName('td');
                 
                 history.push({
-                    bow: cells[0].textContent,
-                    mzfw: cells[1].textContent,
-                    mtow: cells[2].textContent,
-                    mlw: cells[3].textContent,
-                    mrw: cells[4].textContent,
-                    tripFuel: cells[5].textContent,
-                    taxiFuel: cells[6].textContent,
-                    blockFuel: cells[7].textContent,
-                    zfw: cells[8].textContent,
-                    tow: cells[9].textContent,
-                    rw: cells[10].textContent,
-                    lw: cells[11].textContent,
-                    maxPayload: cells[12].textContent
+                    aircraftName: cells[0].textContent,
+                    bow: cells[1].textContent,
+                    mzfw: cells[2].textContent,
+                    mtow: cells[3].textContent,
+                    mlw: cells[4].textContent,
+                    mrw: cells[5].textContent,
+                    tripFuel: cells[6].textContent,
+                    taxiFuel: cells[7].textContent,
+                    blockFuel: cells[8].textContent,
+                    zfw: cells[9].textContent,
+                    tow: cells[10].textContent,
+                    rw: cells[11].textContent,
+                    lw: cells[12].textContent,
+                    maxPayload: cells[13].textContent
                 });
             }
             
@@ -560,6 +836,7 @@
                 const newRow = document.createElement('tr');
                 
                 newRow.innerHTML = `
+                    <td>${item.aircraftName}</td>
                     <td>${item.bow}</td>
                     <td>${item.mzfw}</td>
                     <td>${item.mtow}</td>
@@ -581,6 +858,7 @@
         
         // Función para limpiar el formulario
         function resetForm() {
+            document.getElementById('aircraftModel').value = '';
             document.getElementById('bow').value = '';
             document.getElementById('mzfw').value = '';
             document.getElementById('mtow').value = '';
@@ -604,21 +882,23 @@
             
             document.getElementById('alertLw').textContent = '-';
             document.getElementById('alertLw').className = 'result-group';
+            
+            // Quitar clase de modificación
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.classList.remove('modified');
+            });
+            
+            originalValues = {};
         }
         
         // Cargar historial al iniciar la página
         window.onload = function() {
             loadHistoryFromLocalStorage();
             
-            // Precargar algunos valores de ejemplo
-            document.getElementById('bow').value = 75000;
-            document.getElementById('mzfw').value = 128000;
-            document.getElementById('mtow').value = 205000;
-            document.getElementById('mlw').value = 145000;
-            document.getElementById('mrw').value = 205000;
-            document.getElementById('tripFuel').value = 68000;
-            document.getElementById('taxiFuel').value = 1000;
-            document.getElementById('blockFuel').value = 78000;
+            // Precargar valores de ejemplo
+            document.getElementById('aircraftModel').value = 'boeing737';
+            loadAircraftData();
         };
     </script>
 </body>
